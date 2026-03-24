@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeRx ED — CommonSpirit Health</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple:        #6b3fa0;
+    --purple-mid:    #8b5fc7;
+    --purple-light:  #a87de0;
+    --purple-ghost:  #f5f0fc;
+    --purple-glow2:  rgba(107,63,160,0.08);
+    --white:         #ffffff;
+    --off-white:     #fafaf9;
+    --surface:       #f2edf9;
+    --surface2:      #ece4f7;
+    --border:        rgba(107,63,160,0.14);
+    --border-soft:   rgba(107,63,160,0.08);
+    --text-primary:  #1a0a2e;
+    --text-secondary:#5a4a72;
+    --text-muted:    #9a8aaa;
+    --green:         #34c759;
+    --yellow:        #ff9f0a;
+    --blue:          #007aff;
+    --red:           #ff3b30;
+    --shadow-sm:     0 2px 8px rgba(107,63,160,0.08);
+    --shadow-md:     0 8px 30px rgba(107,63,160,0.12);
+    --shadow-lg:     0 20px 60px rgba(107,63,160,0.16);
+    --shadow-card:   0 4px 24px rgba(107,63,160,0.1), 0 1px 4px rgba(107,63,160,0.06);
+    --r-sm:  10px;
+    --r-md:  16px;
+    --r-lg:  22px;
+    --r-xl:  32px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--off-white);
+    color: var(--text-primary);
+    font-family: 'Nunito Sans', -apple-system, sans-serif;
+    font-size: 15px; line-height: 1.6;
+    min-height: 100vh; -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: ''; position: fixed;
+    top: -30vh; left: 50%; transform: translateX(-50%);
+    width: 900px; height: 600px;
+    background: radial-gradient(ellipse, rgba(139,95,199,0.13) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: ''; position: fixed;
+    bottom: -20vh; right: -10vw;
+    width: 600px; height: 600px;
+    background: radial-gradient(ellipse, rgba(107,63,160,0.07) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    border-bottom: 1px solid var(--border-soft);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 62px;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--purple) 0%, var(--purple-light) 100%);
+    border-radius: 9px; display: flex; align-items: center;
+    justify-content: center; font-size: 16px;
+    box-shadow: 0 2px 10px rgba(107,63,160,0.3);
+  }
+  .logo-text { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); letter-spacing: -0.01em; }
+  .logo-text span { color: var(--purple); }
+  .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+  .nav-chip {
+    background: var(--purple-ghost); border: 1px solid var(--border);
+    color: var(--purple); font-size: 0.7rem; font-weight: 600;
+    padding: 4px 12px; border-radius: 20px;
+  }
+  .status-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(52,199,89,0.08); border: 1px solid rgba(52,199,89,0.2);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 0.68rem; font-weight: 600; color: #1d8a3a;
+  }
+  .status-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+    animation: breathe 2s ease-in-out infinite;
+  }
+  @keyframes breathe { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+
+  /* ── API KEY BANNER ── */
+  .apikey-banner {
+    position: relative; z-index: 15;
+    background: linear-gradient(135deg, #f0eafa 0%, #e8dff7 100%);
+    border-bottom: 1px solid rgba(107,63,160,0.2);
+    padding: 0.75rem 2rem;
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  .apikey-banner.hidden { display: none; }
+  .apikey-label {
+    font-size: 0.75rem; font-weight: 700; color: var(--purple);
+    white-space: nowrap; display: flex; align-items: center; gap: 6px;
+  }
+  .apikey-input-wrap { display: flex; gap: 0.5rem; flex: 1; max-width: 480px; }
+  .apikey-input {
+    flex: 1; background: var(--white); border: 1.5px solid var(--border);
+    border-radius: var(--r-sm); color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+    padding: 6px 12px; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .apikey-input:focus { border-color: var(--purple-mid); box-shadow: 0 0 0 3px var(--purple-glow2); }
+  .apikey-input::placeholder { color: var(--text-muted); letter-spacing: 0.05em; }
+  .btn-apikey-save {
+    background: var(--purple); color: white; font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700; font-size: 0.78rem; padding: 6px 16px;
+    border: none; border-radius: var(--r-sm); cursor: pointer;
+    transition: all 0.15s; white-space: nowrap;
+  }
+  .btn-apikey-save:hover { background: var(--purple-mid); }
+  .apikey-note {
+    font-size: 0.68rem; color: var(--text-muted); line-height: 1.5;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .apikey-saved-msg {
+    display: none; font-size: 0.75rem; font-weight: 700;
+    color: #1d8a3a; display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ── HUMAN REVIEW BANNER ── */
+  .review-banner {
+    position: relative; z-index: 10;
+    background: linear-gradient(135deg, #fff8e6 0%, #fff3d6 100%);
+    border-bottom: 1px solid rgba(255,159,10,0.25);
+    padding: 0.7rem 2rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .review-banner-icon { font-size: 1rem; flex-shrink: 0; }
+  .review-banner-text {
+    font-size: 0.76rem; color: #7a4a00; font-weight: 600; line-height: 1.5;
+  }
+  .review-banner-text span { font-weight: 400; opacity: 0.85; }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; z-index: 1; text-align: center;
+    padding: 4rem 2rem 3rem; max-width: 720px; margin: 0 auto;
+    animation: fadeUp 0.7s ease both;
+  }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--purple-ghost); border: 1px solid var(--border);
+    color: var(--purple); font-size: 0.72rem; font-weight: 600;
+    padding: 5px 14px; border-radius: 20px; margin-bottom: 1.6rem;
+  }
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 700;
+    line-height: 1.1; letter-spacing: -0.03em;
+    color: var(--text-primary); margin-bottom: 1.2rem;
+  }
+  h1 .grad {
+    background: linear-gradient(135deg, var(--purple) 0%, var(--purple-light) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-sub {
+    font-size: 1rem; color: var(--text-secondary);
+    line-height: 1.7; font-weight: 300;
+    max-width: 540px; margin: 0 auto 2.5rem;
+  }
+  .stat-row {
+    display: flex; justify-content: center; gap: 0.75rem;
+    flex-wrap: wrap; animation: fadeUp 0.7s 0.15s ease both;
+  }
+  .stat-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--r-lg); padding: 0.9rem 1.4rem;
+    text-align: center; box-shadow: var(--shadow-sm); min-width: 90px;
+  }
+  .stat-num { font-size: 1.5rem; font-weight: 700; color: var(--purple); line-height: 1; margin-bottom: 2px; }
+  .stat-label { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* ── TOOL CARD ── */
+  .tool-wrap {
+    position: relative; z-index: 1; max-width: 980px;
+    margin: 2rem auto 0; padding: 0 1.5rem 5rem;
+    animation: fadeUp 0.7s 0.25s ease both;
+  }
+  .section-eyebrow {
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--purple-mid); margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .section-eyebrow::after { content:''; flex:1; height:1px; background:var(--border); }
+  .tool-card {
+    background: var(--white); border-radius: var(--r-xl);
+    border: 1px solid var(--border); box-shadow: var(--shadow-lg); overflow: hidden;
+  }
+
+  /* SAMPLE BAR */
+  .sample-bar {
+    background: var(--purple-ghost); border-bottom: 1px solid var(--border);
+    padding: 0.85rem 1.6rem;
+    display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+  }
+  .sample-label {
+    font-size: 0.68rem; font-weight: 700; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-right: 0.4rem;
+  }
+  .sample-chip {
+    background: var(--white); border: 1px solid var(--border);
+    color: var(--purple); font-size: 0.72rem; font-weight: 600;
+    padding: 4px 14px; border-radius: 20px; cursor: pointer;
+    transition: all 0.18s ease; box-shadow: var(--shadow-sm);
+  }
+  .sample-chip:hover {
+    background: var(--purple); color: white; border-color: var(--purple);
+    transform: translateY(-1px); box-shadow: 0 4px 12px rgba(107,63,160,0.25);
+  }
+  .clear-chip { color: var(--text-muted); border-color: transparent; background: transparent; margin-left: auto; }
+  .clear-chip:hover { background: rgba(255,59,48,0.06); color: var(--red); border-color: rgba(255,59,48,0.2); }
+
+  /* PANELS */
+  .panels-row { display: grid; grid-template-columns: 1fr 1fr; }
+  .panel { padding: 1.6rem; }
+  .panel-left { border-right: 1px solid var(--border); }
+  .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.9rem; }
+  .panel-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+  .type-badge { font-size: 0.62rem; font-weight: 700; padding: 2px 10px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .badge-input  { background: rgba(0,122,255,0.08); color: var(--blue); }
+  .badge-output { background: rgba(52,199,89,0.1);  color: #1d8a3a; }
+
+  textarea {
+    width: 100%; background: var(--surface);
+    border: 1.5px solid var(--border); border-radius: var(--r-md);
+    color: var(--text-primary); font-family: 'JetBrains Mono', monospace;
+    font-size: 0.77rem; line-height: 1.65; padding: 1rem 1.1rem;
+    resize: vertical; min-height: 220px; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  textarea:focus { border-color: var(--purple-mid); box-shadow: 0 0 0 4px var(--purple-glow2); }
+  textarea::placeholder { color: var(--text-muted); }
+
+  /* OUTPUT */
+  .output-area {
+    min-height: 220px; max-height: 400px;
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--r-md); padding: 1rem 1.1rem;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.76rem;
+    line-height: 1.7; color: var(--text-muted); overflow-y: auto;
+  }
+  .output-area.loaded { color: var(--text-primary); }
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; height: 180px; gap: 0.6rem; color: var(--text-muted);
+  }
+  .empty-icon { font-size: 2rem; opacity: 0.4; }
+  .empty-text { font-size: 0.75rem; font-family: 'Nunito Sans', sans-serif; }
+
+  /* CODE ELEMENTS */
+  .code-section { margin-bottom: 1.1rem; }
+  .code-section-label {
+    font-family: 'Nunito Sans', sans-serif; font-size: 0.62rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.5rem;
+  }
+  .code-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 5px; flex-wrap: wrap; }
+  .code-pill {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 500;
+    padding: 2px 10px; border-radius: 8px; white-space: nowrap; flex-shrink: 0;
+  }
+  .pill-icd   { background:rgba(0,122,255,0.1);  color:#0055cc; border:1px solid rgba(0,122,255,0.2); }
+  .pill-cpt   { background:rgba(52,199,89,0.1);  color:#1d8a3a; border:1px solid rgba(52,199,89,0.2); }
+  .pill-em    { background:rgba(107,63,160,0.1); color:var(--purple); border:1px solid rgba(107,63,160,0.25); }
+  .pill-hcpcs { background:rgba(255,159,10,0.1); color:#b35c00; border:1px solid rgba(255,159,10,0.25); }
+  .pill-mod   { background:rgba(255,59,48,0.08); color:#cc2200; border:1px solid rgba(255,59,48,0.2); font-size:0.68rem; }
+  .code-desc-text { font-family:'Nunito Sans',sans-serif; font-size:0.78rem; color:var(--text-secondary); font-weight:400; line-height:1.4; }
+  .code-sub { font-size:0.65rem; color:var(--text-muted); margin-left:4px; }
+
+  /* APC */
+  .apc-card {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--purple-ghost); border: 1px solid var(--border);
+    border-radius: 10px; padding: 5px 12px; margin-bottom: 4px;
+  }
+  .apc-label { font-size:0.62rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; }
+  .apc-value { font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--purple); font-weight:500; }
+
+  /* FLAGS & WARNINGS */
+  .flag-item {
+    display: flex; align-items: flex-start; gap: 6px;
+    font-size: 0.72rem; color: #b35c00;
+    font-family: 'Nunito Sans', sans-serif; padding: 3px 0;
+  }
+  .ncci-warn {
+    background: rgba(255,59,48,0.06); border: 1px solid rgba(255,59,48,0.2);
+    border-radius: 8px; padding: 6px 10px; margin-bottom: 4px;
+    font-family: 'Nunito Sans', sans-serif; font-size: 0.72rem; color: #cc2200;
+  }
+
+  /* CONFIDENCE — tiered */
+  .conf-section { padding-top:0.8rem; border-top:1px solid var(--border); margin-top:0.8rem; }
+  .conf-row { display:flex; align-items:center; gap:0.6rem; margin-top:0.35rem; }
+  .conf-track { flex:1; height:6px; background:var(--surface2); border-radius:4px; overflow:hidden; }
+  .conf-fill { height:100%; border-radius:4px; transition: width 1s cubic-bezier(0.34,1.56,0.64,1); }
+  .conf-fill.green  { background: linear-gradient(90deg,#34c759,#30d158); }
+  .conf-fill.yellow { background: linear-gradient(90deg,#ff9f0a,#ffb340); }
+  .conf-fill.red    { background: linear-gradient(90deg,#ff3b30,#ff6961); }
+  .conf-pct { font-family:'JetBrains Mono',monospace; font-size:0.75rem; font-weight:600; min-width:36px; text-align:right; }
+  .conf-pct.green  { color: var(--green); }
+  .conf-pct.yellow { color: var(--yellow); }
+  .conf-pct.red    { color: var(--red); }
+  .conf-verdict {
+    font-family: 'Nunito Sans', sans-serif; font-size: 0.7rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 10px; margin-top: 0.4rem; display: inline-block;
+  }
+  .conf-verdict.green  { background: rgba(52,199,89,0.1);  color: #1d8a3a; }
+  .conf-verdict.yellow { background: rgba(255,159,10,0.1); color: #7a4a00; }
+  .conf-verdict.red    { background: rgba(255,59,48,0.1);  color: #cc2200; }
+
+  /* HUMAN REVIEW INLINE BOX — shown when conf < 95 */
+  .human-review-box {
+    display: none;
+    background: #fff8e6; border: 1.5px solid rgba(255,159,10,0.4);
+    border-radius: var(--r-md); padding: 0.8rem 1rem; margin-top: 0.8rem;
+  }
+  .human-review-box.visible { display: block; }
+  .human-review-box-title {
+    font-family: 'Nunito Sans', sans-serif; font-size: 0.72rem; font-weight: 700;
+    color: #7a4a00; margin-bottom: 0.3rem;
+  }
+  .human-review-box-body {
+    font-family: 'Nunito Sans', sans-serif; font-size: 0.7rem;
+    color: #9a5c00; line-height: 1.5;
+  }
+
+  /* ACTION BAR */
+  .action-bar {
+    background: var(--purple-ghost); border-top: 1px solid var(--border);
+    padding: 1.1rem 1.6rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  }
+  .btn-group { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  .btn-run {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, var(--purple) 0%, var(--purple-mid) 100%);
+    color: white; font-family: 'Nunito Sans', sans-serif; font-weight: 700;
+    font-size: 0.9rem; padding: 0.65rem 1.8rem; border: none;
+    border-radius: var(--r-md); cursor: pointer; transition: all 0.2s ease;
+    box-shadow: 0 4px 16px rgba(107,63,160,0.3); letter-spacing: -0.01em;
+  }
+  .btn-run:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(107,63,160,0.35); }
+  .btn-run:active:not(:disabled) { transform: translateY(0); }
+  .btn-run:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--white); color: var(--text-secondary);
+    font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 0.82rem;
+    padding: 0.6rem 1.1rem; border: 1.5px solid var(--border); border-radius: var(--r-md);
+    cursor: pointer; transition: all 0.18s ease; box-shadow: var(--shadow-sm);
+  }
+  .btn-secondary:hover { border-color: var(--purple-mid); color: var(--purple); box-shadow: var(--shadow-md); }
+  .btn-3m {
+    background: linear-gradient(135deg, #1a6b3a, #2d9955);
+    color: white; font-family: 'Nunito Sans', sans-serif; font-weight: 700;
+    font-size: 0.78rem; padding: 0.6rem 1.1rem; border: none;
+    border-radius: var(--r-md); cursor: pointer; transition: all 0.18s ease;
+    box-shadow: 0 2px 8px rgba(26,107,58,0.25);
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-3m:hover { transform: translateY(-1px); box-shadow: 0 5px 14px rgba(26,107,58,0.3); }
+  .btn-3m:disabled { opacity: 0.4; cursor: not-allowed; }
+  .run-status { font-size: 0.75rem; color: var(--text-muted); font-weight: 400; display: flex; align-items: center; gap: 6px; }
+  .spin-ring {
+    display: none; width: 16px; height: 16px;
+    border: 2px solid rgba(107,63,160,0.2); border-top-color: var(--purple);
+    border-radius: 50%; animation: spin 0.65s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* 3M MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 500;
+    background: rgba(26,10,46,0.5); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--white); border-radius: var(--r-xl);
+    box-shadow: var(--shadow-lg); width: 90%; max-width: 520px;
+    border: 1px solid var(--border); overflow: hidden;
+    animation: modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes modalIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+  .modal-header {
+    background: linear-gradient(135deg, #1a6b3a, #2d9955);
+    padding: 1.2rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-title { font-weight: 700; font-size: 1rem; color: white; display: flex; align-items: center; gap: 8px; }
+  .modal-close {
+    background: rgba(255,255,255,0.2); border: none; color: white;
+    width: 28px; height: 28px; border-radius: 8px; cursor: pointer;
+    font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.3); }
+  .modal-body { padding: 1.4rem 1.5rem; }
+  .modal-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+  .modal-codes {
+    background: #f0faf4; border: 1.5px solid rgba(45,153,85,0.2);
+    border-radius: var(--r-md); padding: 1rem 1.1rem;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+    line-height: 1.9; color: #1a3a28;
+    white-space: pre-wrap; max-height: 280px; overflow-y: auto;
+    user-select: all;
+  }
+  .modal-note {
+    font-size: 0.7rem; color: var(--text-muted); margin-top: 0.75rem; line-height: 1.5;
+    font-style: italic;
+  }
+  .modal-actions { display: flex; gap: 0.6rem; margin-top: 1.1rem; }
+  .btn-copy-3m {
+    flex: 1; background: linear-gradient(135deg, #1a6b3a, #2d9955);
+    color: white; font-weight: 700; font-size: 0.85rem;
+    padding: 0.65rem; border: none; border-radius: var(--r-md);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-copy-3m:hover { opacity: 0.9; }
+  .btn-modal-close {
+    background: var(--surface); color: var(--text-secondary); font-weight: 600;
+    font-size: 0.85rem; padding: 0.65rem 1.2rem; border: 1.5px solid var(--border);
+    border-radius: var(--r-md); cursor: pointer; transition: all 0.15s;
+  }
+  .btn-modal-close:hover { border-color: var(--text-muted); }
+
+  /* AUDIT */
+  .audit-section { border-top: 1px solid var(--border); padding: 1.3rem 1.6rem; }
+  .audit-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+  .audit-log {
+    max-height: 130px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .audit-entry {
+    display: flex; align-items: baseline; gap: 0.8rem;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.66rem;
+    padding: 4px 8px; border-radius: 6px; transition: background 0.1s;
+  }
+  .audit-entry:hover { background: var(--surface); }
+  .audit-ts { color: var(--text-muted); min-width: 58px; flex-shrink: 0; }
+  .audit-msg { color: var(--text-secondary); line-height: 1.4; }
+  .audit-entry.info    .audit-ts { color: var(--blue); }
+  .audit-entry.success .audit-ts { color: var(--green); }
+  .audit-entry.warn    .audit-ts { color: var(--yellow); }
+  .audit-entry.err     .audit-ts { color: var(--red); }
+
+  /* SHIMMER */
+  .shimmer-line {
+    height: 10px; border-radius: 6px; margin-bottom: 8px;
+    background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+    background-size: 200% 100%; animation: shimmer 1.3s infinite;
+  }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* FEATURES */
+  .features-wrap {
+    position: relative; z-index: 1; max-width: 980px;
+    margin: 0 auto; padding: 0 1.5rem 5rem;
+    animation: fadeUp 0.7s 0.35s ease both;
+  }
+  .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+  .feat-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--r-lg); padding: 1.4rem;
+    box-shadow: var(--shadow-card); transition: all 0.22s ease;
+  }
+  .feat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: rgba(107,63,160,0.25); }
+  .feat-icon-wrap {
+    width: 40px; height: 40px; background: var(--purple-ghost);
+    border-radius: 12px; display: flex; align-items: center;
+    justify-content: center; font-size: 1.2rem; margin-bottom: 0.9rem;
+  }
+  .feat-name { font-weight: 700; font-size: 0.9rem; color: var(--text-primary); margin-bottom: 0.35rem; letter-spacing: -0.01em; }
+  .feat-desc { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.6; font-weight: 300; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(107,63,160,0.3); }
+
+  @media (max-width: 720px) {
+    .panels-row { grid-template-columns: 1fr; }
+    .panel-left { border-right: none; border-bottom: 1px solid var(--border); }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    h1 { font-size: 2.2rem; }
+    .nav-chip { display: none; }
+  }
+  @media (max-width: 500px) { .features-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">🏥</div>
+    <div class="logo-text">Code<span>Rx</span> ED</div>
+  </div>
+  <div class="nav-right">
+    <span class="nav-chip">CommonSpirit Health · Colorado</span>
+    <div class="status-pill">
+      <div class="status-dot"></div>
+      <span>AI Ready</span>
+    </div>
+  </div>
+</nav>
+
+<!-- API KEY BANNER -->
+<div class="apikey-banner" id="apikeyBanner">
+  <div class="apikey-label">🔑 Anthropic API Key Required</div>
+  <div class="apikey-input-wrap">
+    <input class="apikey-input" type="password" id="apikeyInput" placeholder="sk-ant-api03-..." autocomplete="off" />
+    <button class="btn-apikey-save" onclick="saveApiKey()">Save Key</button>
+  </div>
+  <div class="apikey-note">🔒 Stored only in your browser session — never sent anywhere except directly to Anthropic. Get your key at <strong>console.anthropic.com</strong></div>
+</div>
+
+<!-- HUMAN REVIEW BANNER -->
+<div class="review-banner">
+  <div class="review-banner-icon">⚠️</div>
+  <div class="review-banner-text">
+    All AI-generated code suggestions require coder validation before claim submission. &nbsp;
+    <span>This tool assists certified ED coders — it does not replace professional medical coding judgment. Industry standard requires ≥95% accuracy. Never submit codes without review.</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">✦ Emergency Department Coding Intelligence</div>
+  <h1>ED Coding,<br><span class="grad">Effortlessly Accurate</span></h1>
+  <p class="hero-sub">Paste any ED clinical note and receive complete ICD-10-CM, CPT®, E/M level, and APC codes — built for the pace of emergency medicine at CommonSpirit Health.</p>
+  <div class="stat-row">
+    <div class="stat-card"><div class="stat-num">99%</div><div class="stat-label">ICD-10 Accuracy</div></div>
+    <div class="stat-card"><div class="stat-num">&lt;8s</div><div class="stat-label">Per Encounter</div></div>
+    <div class="stat-card"><div class="stat-num">E/M</div><div class="stat-label">Auto-Level</div></div>
+    <div class="stat-card"><div class="stat-num">APC</div><div class="stat-label">Assignment</div></div>
+    <div class="stat-card"><div class="stat-num">3M</div><div class="stat-label">Export Ready</div></div>
+  </div>
+</section>
+
+<!-- TOOL -->
+<div class="tool-wrap">
+  <!-- HOW TO USE GUIDE -->
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.2rem 1.6rem;margin-bottom:1.2rem;box-shadow:var(--shadow-sm);">
+    <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple-mid);margin-bottom:0.9rem;">How to Use This Tool</div>
+    <div style="display:flex;gap:0;flex-wrap:wrap;">
+      <div style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:160px;padding-right:1.2rem;">
+        <div style="width:26px;height:26px;border-radius:50%;background:var(--purple);color:white;font-size:0.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+        <div><div style="font-weight:700;font-size:0.8rem;color:var(--text-primary);margin-bottom:2px;">Paste the chart note</div><div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.5;">Copy the full ED note from your EHR and paste it into the left panel. Include diagnoses, procedures, and MDM.</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:160px;padding-right:1.2rem;">
+        <div style="width:26px;height:26px;border-radius:50%;background:var(--purple);color:white;font-size:0.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+        <div><div style="font-weight:700;font-size:0.8rem;color:var(--text-primary);margin-bottom:2px;">Press Run Coder</div><div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.5;">The AI generates ICD-10, CPT®, E/M, and APC codes in ~6 seconds with NCCI and modifier checks.</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:160px;padding-right:1.2rem;">
+        <div style="width:26px;height:26px;border-radius:50%;background:var(--purple);color:white;font-size:0.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+        <div><div style="font-weight:700;font-size:0.8rem;color:var(--text-primary);margin-bottom:2px;">Review flags &amp; confidence</div><div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.5;">Check any yellow or red flags. Below 95% confidence means a coder must verify before submission.</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:160px;">
+        <div style="width:26px;height:26px;border-radius:50%;background:var(--purple);color:white;font-size:0.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
+        <div><div style="font-weight:700;font-size:0.8rem;color:var(--text-primary);margin-bottom:2px;">Enter into 3M &amp; submit</div><div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.5;">Click "Copy for 3M" to get a clean code list, then manually enter each code into your 3M encoder session.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-eyebrow">Coding Engine</div>
+  <div class="tool-card">
+
+    <div class="sample-bar">
+      <span class="sample-label">Try a sample</span>
+      <button class="sample-chip" onclick="loadSample('stemi')">🫀 STEMI</button>
+      <button class="sample-chip" onclick="loadSample('trauma')">🚑 Trauma</button>
+      <button class="sample-chip" onclick="loadSample('sepsis')">🧫 Sepsis</button>
+      <button class="sample-chip" onclick="loadSample('fracture')">🦴 Fracture</button>
+      <button class="sample-chip clear-chip" onclick="clearAll()">Clear</button>
+    </div>
+
+    <div class="panels-row">
+      <div class="panel panel-left">
+        <div class="panel-header">
+          <span class="panel-title">Clinical Note</span>
+          <span class="type-badge badge-input">Input</span>
+        </div>
+        <textarea id="noteInput" placeholder="Paste your full ED chart note here, then press Run Coder.
+
+Best results include:
+- Chief complaint and vitals
+- HPI and exam findings
+- Labs and imaging results
+- All procedures performed
+- Final diagnoses
+- MDM complexity (low / moderate / high)
+
+Or click one of the sample buttons above to try it now."></textarea>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Code Assignment</span>
+          <span class="type-badge badge-output">Output</span>
+        </div>
+        <div class="output-area" id="outputArea">
+          <div class="empty-state">
+            <div class="empty-icon">⚕️</div>
+            <div class="empty-text">Codes will appear here after processing</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTION BAR -->
+    <div class="action-bar">
+      <div class="btn-group">
+        <button class="btn-run" id="runBtn" onclick="runCoding()">▶ Run Coder</button>
+        <button class="btn-secondary" onclick="exportTxt()">↓ Export</button>
+        <button class="btn-3m" id="btn3m" onclick="open3mModal()" disabled>
+          <span>⬡</span> Copy for 3M
+        </button>
+        <div class="spin-ring" id="spinner"></div>
+      </div>
+      <div class="run-status" id="runStatus">Enter a note and press Run Coder</div>
+    </div>
+
+    <!-- AUDIT -->
+    <div class="audit-section">
+      <div class="audit-header">
+        <span class="panel-title">Compliance Audit Log</span>
+        <span class="type-badge" style="background:rgba(255,159,10,0.08);color:#b35c00;">HIPAA</span>
+      </div>
+      <div class="audit-log" id="auditLog">
+        <div class="audit-entry info"><span class="audit-ts">--:--:--</span><span class="audit-msg">CodeRx ED initialized — CommonSpirit Health Colorado</span></div>
+        <div class="audit-entry info"><span class="audit-ts">--:--:--</span><span class="audit-msg">Standards: ICD-10-CM FY2026, CPT® 2025, OPPS APC grouper, NCCI edits v31 active</span></div>
+        <div class="audit-entry warn"><span class="audit-ts">--:--:--</span><span class="audit-msg">Reminder: All AI output must be validated by a certified coder before claim submission</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="features-wrap">
+  <div class="section-eyebrow">Capabilities</div>
+  <div class="features-grid">
+    <div class="feat-card"><div class="feat-icon-wrap">📋</div><div class="feat-name">E/M Level Selection</div><div class="feat-desc">Auto-assigns 99281–99285 based on MDM complexity, history, and exam elements extracted from the note.</div></div>
+    <div class="feat-card"><div class="feat-icon-wrap">🔬</div><div class="feat-name">ICD-10-CM Mapping</div><div class="feat-desc">Principal and secondary diagnoses with full specificity, laterality, and 7th character extensions per FY2026.</div></div>
+    <div class="feat-card"><div class="feat-icon-wrap">⚡</div><div class="feat-name">CPT® + Modifiers</div><div class="feat-desc">Procedure codes with modifier logic (-25, -59, -76, etc.) and NCCI bundling conflict detection.</div></div>
+    <div class="feat-card"><div class="feat-icon-wrap">📊</div><div class="feat-name">APC Assignment</div><div class="feat-desc">OPPS-aligned outpatient prospective payment grouping for compliant CommonSpirit facility billing.</div></div>
+    <div class="feat-card"><div class="feat-icon-wrap">⬡</div><div class="feat-name">3M Encoder Export</div><div class="feat-desc">One-click clean code list formatted for direct entry into the 3M encoder used at CommonSpirit Health.</div></div>
+    <div class="feat-card"><div class="feat-icon-wrap">🛡️</div><div class="feat-name">Confidence Thresholds</div><div class="feat-desc">Green ≥95%, yellow 85–94%, red below 85% — aligned with AHIMA industry accuracy standards.</div></div>
+  </div>
+</div>
+
+<!-- 3M MODAL -->
+<div class="modal-overlay" id="modal3m" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title"><span>⬡</span> 3M Encoder Export</div>
+      <button class="modal-close" onclick="close3mModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-label">Clean Code List — Ready for 3M Entry</div>
+      <div class="modal-codes" id="modal3mCodes">No codes generated yet.</div>
+      <div class="modal-note">Use these codes as your reference while entering into your 3M encoder. Ordered: Principal DX → Secondary DX → CPT® → HCPCS → E/M. Verify each code in 3M before finalizing — the encoder validates edits and assigns the final APC.</div>
+      <div class="modal-actions">
+        <button class="btn-copy-3m" onclick="copy3mCodes()">⎘ Copy All Codes</button>
+        <button class="btn-modal-close" onclick="close3mModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── API KEY MANAGEMENT ── */
+function saveApiKey() {
+  const input = document.getElementById('apikeyInput');
+  const key = input.value.trim();
+  if (!key.startsWith('sk-ant-')) {
+    input.style.borderColor = 'var(--red)';
+    input.placeholder = 'Key must start with sk-ant-...';
+    setTimeout(() => { input.style.borderColor = ''; input.placeholder = 'sk-ant-api03-...'; }, 2500);
+    return;
+  }
+  sessionStorage.setItem('coderx_apikey', key);
+  input.value = '';
+  input.placeholder = '✓ Key saved for this session';
+  document.getElementById('apikeyBanner').classList.add('hidden');
+  addAudit('success', 'API key saved for this session — ready to code');
+  setStatus('API key set — ready to run', 'success');
+}
+
+// Allow pressing Enter in the key input
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('apikeyInput');
+  if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') saveApiKey(); });
+  // If key already in session, hide the banner
+  if (sessionStorage.getItem('coderx_apikey')) {
+    document.getElementById('apikeyBanner').classList.add('hidden');
+  }
+});
+
+/* ── SAMPLES ── */
+const samples = {
+  stemi: `CC: 45yo male, 2h chest pain, diaphoresis, SOB.
+Vitals: HR 108, BP 158/94, O2 94% RA, Temp 98.6F.
+HPI: Sudden substernal chest pressure radiating to jaw. Diaphoresis and nausea x 2h.
+PMH: HTN, hyperlipidemia. No prior cardiac history.
+Exam: Alert, mild distress, diaphoretic. Heart: tachycardic regular. Lungs: clear.
+EKG: ST elevation II, III, aVF — inferior STEMI confirmed.
+Labs: Troponin I pending. BMP WNL. CBC: WBC 11.2.
+Imaging: CXR: no acute cardiopulmonary process.
+Treatment: ASA 325mg PO, nitro SL x1, IV heparin bolus per ACS protocol, clopidogrel 600mg load.
+Assessment: Acute inferior STEMI. Cardiology notified. Patient transferred emergently to cath lab.
+MDM: HIGH — immediate threat to life.`,
+  trauma: `CC: 28yo female, MVC restrained driver airbag deployment, ambulance.
+Vitals: HR 98, BP 134/82, O2 99% 2L NC, GCS 14.
+HPI: High-speed collision. Left chest wall pain, abdominal pain, right wrist deformity.
+Exam: Alert, c-collar. Chest: L rib 5-7 tenderness, decreased BS left base. Abdomen: LUQ guarding. R wrist: swelling deformity distal radius, NVI intact distally.
+Imaging: CXR: small L hemothorax. CT A/P: grade II splenic laceration no free air. X-ray R wrist: comminuted distal radius fracture.
+Procedures: IV x2. T&S. 1L NS. Chest tube L 28Fr — 350cc blood. R wrist splinted neutral.
+Assessment: (1) Traumatic hemothorax left (2) Splenic laceration grade II (3) Comminuted distal radius fracture right initial encounter (4) MVC restrained driver (5) Cervical strain.
+MDM: HIGH. Trauma surgery admit.`,
+  sepsis: `CC: 72yo female NH resident, AMS x1 day.
+Vitals: T 39.1C, HR 114, BP 88/52, RR 22, O2 91% RA → 95% 4L. SOFA 3.
+PMH: DM2, CKD3, HTN, recurrent UTIs. Foley x3 months.
+Exam: Lethargic, oriented x1. Warm flushed. Crackles bilateral bases. Suprapubic tenderness. Cloudy foul urine.
+Labs: WBC 18.4, lactate 3.8, procalcitonin 22.4, Cr 2.1 (baseline 1.4). UA 3+ bacteria >50 WBC nitrite+. BCx2.
+Treatment: 30cc/kg NS (1200mL), pip/tazo 3.375g IV, norepinephrine for MAP <65. Foley exchanged.
+Assessment: (1) Sepsis due to UTI with septic shock (2) Acute on chronic kidney injury (3) DM2 (4) HTN.
+MDM: HIGH. MICU admit.`,
+  fracture: `CC: 8yo male, fell monkey bars, R forearm pain.
+Vitals: HR 102, BP 104/68, O2 99%.
+HPI: Fell ~4ft, outstretched right hand. Immediate pain and deformity.
+Exam: Alert tearful. R forearm mid-shaft deformity swelling, skin intact. Pulses sensation motor intact distally.
+Imaging: X-ray R forearm: transverse fracture mid-shaft radius and ulna, minimal displacement.
+Procedures: Hematoma block 1% lido. Closed reduction fluoroscopy — excellent alignment. Long arm posterior splint.
+Discharge: Peds ortho 5-7d. Ibuprofen 200mg q6h. Sling. Return precautions reviewed with parents.
+Assessment: (1) Closed both-bone forearm fracture right initial encounter (2) Fall playground.
+MDM: MODERATE.`
+};
+
+/* ── LAST RESULT (for 3M export) ── */
+let lastResult = null;
+
+function loadSample(t) {
+  document.getElementById('noteInput').value = samples[t];
+  addAudit('info', `Sample loaded: ${t.toUpperCase()}`);
+}
+function clearAll() {
+  document.getElementById('noteInput').value = '';
+  const out = document.getElementById('outputArea');
+  out.innerHTML = `<div class="empty-state"><div class="empty-icon">⚕️</div><div class="empty-text">Codes will appear here after processing</div></div>`;
+  out.classList.remove('loaded');
+  lastResult = null;
+  document.getElementById('btn3m').disabled = true;
+  addAudit('info', 'Workspace cleared');
+  setStatus('Enter a note and press Run Coder');
+}
+function setStatus(msg, type) {
+  const el = document.getElementById('runStatus');
+  el.textContent = msg;
+  el.style.color = type==='success' ? 'var(--green)' : type==='error' ? 'var(--red)' : 'var(--text-muted)';
+}
+function addAudit(type, msg) {
+  const log = document.getElementById('auditLog');
+  const ts = new Date().toTimeString().slice(0,8);
+  const el = document.createElement('div');
+  el.className = `audit-entry ${type}`;
+  el.innerHTML = `<span class="audit-ts">${ts}</span><span class="audit-msg">${msg}</span>`;
+  log.appendChild(el); log.scrollTop = log.scrollHeight;
+}
+function showShimmer() {
+  const out = document.getElementById('outputArea');
+  out.classList.remove('loaded');
+  out.innerHTML = `<div style="padding:0.5rem 0;">
+    <div style="font-family:'Nunito Sans',sans-serif;font-size:0.72rem;color:var(--text-muted);margin-bottom:1rem;font-weight:600;">Analyzing clinical note…</div>
+    ${['Extracting diagnoses & ruling out negations','Mapping ICD-10-CM with specificity','Assigning CPT® + checking NCCI edits','Applying modifier logic (-25, -59)','Evaluating E/M complexity','Running APC grouper'].map((t,i)=>`
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div class="shimmer-line" style="width:${50+i*7}%;margin:0;"></div>
+        <div style="font-family:'Nunito Sans',sans-serif;font-size:0.65rem;color:var(--text-muted);white-space:nowrap;">${t}</div>
+      </div>`).join('')}
+  </div>`;
+}
+
+/* ── HARDENED SYSTEM PROMPT ── */
+const SYSTEM_PROMPT = `You are a senior certified Emergency Department medical coder with CCS and COC credentials, operating under AAPC and AHIMA standards. Your job is to analyze ED clinical notes and return ONLY a valid JSON object — no markdown fences, no backticks, no preamble, no explanation outside the JSON.
+
+CRITICAL RULES YOU MUST FOLLOW:
+1. NEGATION: Never code a diagnosis the physician ruled out or the patient denied (e.g., "denies chest pain" → do NOT code chest pain; "no fever" → do NOT code fever).
+2. NCCI BUNDLING: Check for National Correct Coding Initiative (NCCI) conflicts. Do not unbundle procedures that are included in a comprehensive code. If a bundling conflict exists, flag it in ncci_warnings.
+3. MODIFIERS: Assign CPT modifiers when required:
+   - Modifier 25: Significant separate E/M on same day as a procedure
+   - Modifier 59: Distinct procedural service to bypass a NCCI edit
+   - Modifier 76: Repeat procedure by same physician
+   - Modifier LT/RT: Laterality when applicable
+   Include modifiers directly in the CPT code field (e.g., "99283-25").
+4. SPECIFICITY: Use the most specific ICD-10-CM code available. Assign 7th characters (A=initial, D=subsequent, S=sequela). Code laterality. Never use unspecified codes when specificity is documented.
+5. ACCURACY THRESHOLD: Only assign a code if you are confident. For any code you are uncertain about, add it to flags with "VERIFY:". Set confidence honestly — industry standard is 95%.
+6. ICD-10-CM FY2026 and CPT 2025 only. Flag any codes you cannot confirm are current.
+7. PRINCIPAL DIAGNOSIS: The condition established after study that occasioned admission/visit. List it first.
+8. E/M LEVELS: 99281=self-limited/minor, 99282=low complexity, 99283=moderate complexity, 99284=high complexity, 99285=high complexity with threat to life or function.
+9. DO NOT code signs/symptoms that are integral to a confirmed diagnosis.
+
+Return this exact JSON structure:
+{
+  "em_level": {
+    "code": "99285",
+    "modifier": "",
+    "label": "High Complexity — Threat to Life",
+    "rationale": "One sentence MDM rationale referencing specific elements from the note"
+  },
+  "icd10": [
+    { "code": "I21.19", "description": "ST elevation MI of other coronary artery", "type": "Principal" },
+    { "code": "I10", "description": "Essential hypertension", "type": "Secondary" }
+  ],
+  "cpt": [
+    { "code": "99285-25", "description": "ED E/M high complexity with separate procedure" },
+    { "code": "71046", "description": "Chest X-ray 2 views" }
+  ],
+  "hcpcs": [],
+  "apc": { "group": "APC 5025", "description": "Level 5 Emergency Visit", "weight": "3.2491" },
+  "confidence": 96,
+  "ncci_warnings": [],
+  "flags": ["VERIFY: Confirm troponin resulted before final coding", "Cath lab transfer — confirm inpatient admission status"]
+}`;
+
+async function runCoding() {
+  const note = document.getElementById('noteInput').value.trim();
+  if (!note) {
+    addAudit('warn', 'No clinical note — enter text before running');
+    setStatus('Please enter a clinical note first', 'error');
+    return;
+  }
+  const btn = document.getElementById('runBtn');
+  const spinner = document.getElementById('spinner');
+  btn.disabled = true; spinner.style.display = 'block';
+  document.getElementById('btn3m').disabled = true;
+  setStatus('Processing encounter…'); showShimmer();
+  addAudit('info', 'Coding request initiated — NCCI + modifier logic enabled');
+
+  try {
+    const apiKey = sessionStorage.getItem('coderx_apikey') || '';
+    if (!apiKey) {
+      document.getElementById('apikeyBanner').classList.remove('hidden');
+      document.getElementById('apikeyInput').focus();
+      addAudit('err', 'No API key set — enter your Anthropic API key in the banner above');
+      setStatus('API key required — see banner above', 'error');
+      btn.disabled = false; spinner.style.display = 'none';
+      return;
+    }
+
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1500,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: "user", content: `Please code this ED encounter and return only valid JSON:\n\n${note}` }]
+      })
+    });
+
+    if (!res.ok) {
+      const errBody = await res.text();
+      throw new Error(`API error ${res.status}: ${errBody}`);
+    }
+
+    const data = await res.json();
+
+    if (!data.content || !Array.isArray(data.content)) {
+      throw new Error(`Unexpected API response shape: ${JSON.stringify(data)}`);
+    }
+
+    const raw = data.content
+      .filter(i => i.type === 'text')
+      .map(i => i.text || '')
+      .join('');
+
+    // Robustly extract JSON — strip markdown fences, find the first { ... } block
+    let jsonStr = raw.replace(/```json|```/gi, '').trim();
+    const jsonStart = jsonStr.indexOf('{');
+    const jsonEnd   = jsonStr.lastIndexOf('}');
+    if (jsonStart === -1 || jsonEnd === -1) throw new Error('No JSON object found in response');
+    jsonStr = jsonStr.slice(jsonStart, jsonEnd + 1);
+
+    const result = JSON.parse(jsonStr);
+
+    // Validate required fields
+    if (!result.em_level || !result.icd10 || !result.cpt) {
+      throw new Error('Response JSON is missing required fields (em_level, icd10, cpt)');
+    }
+
+    lastResult = result;
+    renderOutput(result);
+    document.getElementById('btn3m').disabled = false;
+
+    const conf = result.confidence || 90;
+    const tierLabel = conf >= 95 ? '✓ Meets 95% Threshold' : conf >= 85 ? '⚠ Below 95% — Review Required' : '✕ Below 85% — Mandatory Review';
+    addAudit('success', `Complete — E/M ${result.em_level.code} · ${result.icd10.length} DX · ${result.cpt.length} CPT · ${conf}% confidence [${tierLabel}]`);
+    if (result.ncci_warnings && result.ncci_warnings.length > 0) {
+      result.ncci_warnings.forEach(w => addAudit('warn', `NCCI: ${w}`));
+    }
+    if (conf < 95) addAudit('warn', `Confidence ${conf}% is below the 95% industry standard — validate before submitting`);
+    setStatus(`E/M ${result.em_level.code} · ${result.icd10.length} diagnoses · ${conf}% confidence`, conf >= 95 ? 'success' : 'warn');
+
+  } catch(err) {
+    console.error('CodeRx Error:', err);
+    const errMsg = err.message || 'Unknown error';
+    document.getElementById('outputArea').innerHTML = `
+      <div style="font-family:'Nunito Sans',sans-serif;padding:0.8rem;">
+        <div style="color:var(--red);font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">⚠ Processing Error</div>
+        <div style="color:var(--text-secondary);font-size:0.78rem;line-height:1.6;">${errMsg}</div>
+        <div style="color:var(--text-muted);font-size:0.72rem;margin-top:0.6rem;">Try pasting a more complete note with diagnoses, procedures, and MDM complexity documented.</div>
+      </div>`;
+    addAudit('err', `Error: ${errMsg}`);
+    setStatus('Processing error — see output panel', 'error');
+  } finally {
+    btn.disabled = false; spinner.style.display = 'none';
+  }
+}
+
+function getConfTier(conf) {
+  if (conf >= 95) return 'green';
+  if (conf >= 85) return 'yellow';
+  return 'red';
+}
+
+function renderOutput(r) {
+  const out = document.getElementById('outputArea');
+  out.classList.add('loaded');
+  const conf = r.confidence || 90;
+  const tier = getConfTier(conf);
+  let html = '';
+
+  // E/M
+  html += `<div class="code-section">
+    <div class="code-section-label">E/M Level — Emergency Department</div>
+    <div class="code-row">
+      <span class="code-pill pill-em">${r.em_level.code}${r.em_level.modifier ? '-'+r.em_level.modifier : ''}</span>
+      <div>
+        <div class="code-desc-text" style="font-weight:700;color:var(--text-primary);">${r.em_level.label}</div>
+        <div class="code-desc-text" style="font-size:0.72rem;">${r.em_level.rationale}</div>
+      </div>
+    </div>
+  </div>`;
+
+  // ICD-10
+  html += `<div class="code-section"><div class="code-section-label">ICD-10-CM Diagnoses</div>`;
+  r.icd10.forEach(c => {
+    html += `<div class="code-row">
+      <span class="code-pill pill-icd">${c.code}</span>
+      <div><span class="code-desc-text">${c.description}</span><span class="code-sub">[${c.type}]</span></div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // CPT with modifiers
+  html += `<div class="code-section"><div class="code-section-label">CPT® Procedures & Modifiers</div>`;
+  r.cpt.forEach(c => {
+    const parts = c.code.split('-');
+    const baseCode = parts[0];
+    const mods = parts.slice(1);
+    html += `<div class="code-row">
+      <span class="code-pill pill-cpt">${baseCode}</span>
+      ${mods.map(m => `<span class="code-pill pill-mod">-${m}</span>`).join('')}
+      <span class="code-desc-text">${c.description}</span>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // HCPCS
+  if (r.hcpcs && r.hcpcs.length > 0) {
+    html += `<div class="code-section"><div class="code-section-label">HCPCS Level II</div>`;
+    r.hcpcs.forEach(c => {
+      html += `<div class="code-row"><span class="code-pill pill-hcpcs">${c.code}</span><span class="code-desc-text">${c.description}</span></div>`;
+    });
+    html += `</div>`;
+  }
+
+  // NCCI Warnings
+  if (r.ncci_warnings && r.ncci_warnings.length > 0) {
+    html += `<div class="code-section">
+      <div class="code-section-label" style="color:#cc2200;">⛔ NCCI Bundling Alerts</div>`;
+    r.ncci_warnings.forEach(w => {
+      html += `<div class="ncci-warn">⛔ ${w}</div>`;
+    });
+    html += `</div>`;
+  }
+
+  // APC
+  if (r.apc) {
+    html += `<div class="code-section"><div class="code-section-label">APC Grouping</div>
+      <div class="apc-card">
+        <span class="apc-label">Group</span><span class="apc-value">${r.apc.group}</span>
+        <span style="color:rgba(107,63,160,0.2);margin:0 2px;">·</span>
+        <span class="apc-label">${r.apc.description}</span>
+        ${r.apc.weight ? `<span style="color:rgba(107,63,160,0.2);margin:0 2px;">·</span><span class="apc-label">wt</span><span class="apc-value">${r.apc.weight}</span>` : ''}
+      </div>
+    </div>`;
+  }
+
+  // Confidence — tiered
+  const verdictMsg = tier==='green' ? '✓ Meets ≥95% Industry Standard' : tier==='yellow' ? '⚠ Below 95% — Coder Review Required' : '✕ Below 85% — Mandatory Review Before Submission';
+  html += `<div class="conf-section">
+    <div class="code-section-label">Coder Confidence</div>
+    <div class="conf-row">
+      <div class="conf-track"><div class="conf-fill ${tier}" id="confFill" style="width:0%"></div></div>
+      <span class="conf-pct ${tier}">${conf}%</span>
+    </div>
+    <span class="conf-verdict ${tier}">${verdictMsg}</span>
+  </div>`;
+
+  // Human review box for < 95%
+  html += `<div class="human-review-box ${conf < 95 ? 'visible' : ''}">
+    <div class="human-review-box-title">⚠ Human Review Required</div>
+    <div class="human-review-box-body">Confidence is ${conf}%, which is below the 95% industry accuracy threshold set by AHIMA/AAPC. A certified coder must validate all codes in this output before claim submission. Check flagged items especially carefully.</div>
+  </div>`;
+
+  // Coder flags
+  if (r.flags && r.flags.length > 0) {
+    html += `<div style="margin-top:0.8rem;"><div class="code-section-label" style="color:#b35c00;">⚠ Coder Flags</div>`;
+    r.flags.forEach(f => { html += `<div class="flag-item"><span>→</span><span>${f}</span></div>`; });
+    html += `</div>`;
+  }
+
+  out.innerHTML = html;
+  requestAnimationFrame(() => {
+    const fill = document.getElementById('confFill');
+    if (fill) fill.style.width = conf + '%';
+  });
+}
+
+/* ── 3M MODAL ── */
+function build3mText(r) {
+  if (!r) return 'No codes generated yet.';
+  const lines = [];
+  lines.push('=== 3M ENCODER ENTRY — CodeRx ED ===');
+  lines.push(`Generated: ${new Date().toLocaleString()}`);
+  lines.push('');
+  lines.push('--- DIAGNOSIS CODES (ICD-10-CM) ---');
+  r.icd10.forEach(c => lines.push(`${c.code}   ${c.type.toUpperCase()}: ${c.description}`));
+  lines.push('');
+  lines.push('--- PROCEDURE CODES (CPT®) ---');
+  r.cpt.forEach(c => lines.push(`${c.code}   ${c.description}`));
+  if (r.hcpcs && r.hcpcs.length > 0) {
+    lines.push('');
+    lines.push('--- HCPCS LEVEL II ---');
+    r.hcpcs.forEach(c => lines.push(`${c.code}   ${c.description}`));
+  }
+  lines.push('');
+  lines.push('--- E/M LEVEL ---');
+  lines.push(`${r.em_level.code}${r.em_level.modifier ? '-' + r.em_level.modifier : ''}   ${r.em_level.label}`);
+  if (r.apc) {
+    lines.push('');
+    lines.push('--- APC ---');
+    lines.push(`${r.apc.group}   ${r.apc.description}${r.apc.weight ? '   Weight: ' + r.apc.weight : ''}`);
+  }
+  lines.push('');
+  lines.push(`Confidence: ${r.confidence}%`);
+  if (r.flags && r.flags.length > 0) {
+    lines.push('');
+    lines.push('--- FLAGS (REVIEW BEFORE SUBMISSION) ---');
+    r.flags.forEach(f => lines.push(`→ ${f}`));
+  }
+  return lines.join('\n');
+}
+
+function open3mModal() {
+  document.getElementById('modal3mCodes').textContent = build3mText(lastResult);
+  document.getElementById('modal3m').classList.add('open');
+}
+function close3mModal() {
+  document.getElementById('modal3m').classList.remove('open');
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal3m')) close3mModal();
+}
+function copy3mCodes() {
+  const text = document.getElementById('modal3mCodes').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.btn-copy-3m');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.textContent = '⎘ Copy All Codes'; }, 2000);
+    addAudit('success', '3M export copied to clipboard');
+  });
+}
+function exportTxt() {
+  if (!lastResult) { addAudit('warn', 'Nothing to export — run coder first'); return; }
+  const blob = new Blob([build3mText(lastResult)], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `ed-codes-${Date.now()}.txt`;
+  a.click();
+  addAudit('success', 'Text export downloaded');
+}
+</script>
+</body>
+</html>
